@@ -12,10 +12,19 @@ export default class RecognitionControler {
     var speechRecognitionList = new window["webkitSpeechGrammarList"]();
     speechRecognitionList.addFromString(grammar, 1);
     recognition.grammars = speechRecognitionList;
-    recognition.lang = "tr-TR";
+    recognition.lang = "tr";
     this.recognition = recognition;
     recognition.onresult = function (event) {
+      alert("xxx");
       console.log(event.results);
+    };
+    recognition.onerror = function (event) {
+      alert("error");
+      console.log(event);
+    };
+    recognition.nomatch = function (event) {
+      alert("nomatch");
+      console.log(event);
     };
   }
 
