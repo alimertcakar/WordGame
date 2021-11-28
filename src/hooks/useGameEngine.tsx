@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Recognition from "src/util/audio/Recognition";
 import { useImmerReducer } from "use-immer";
 
@@ -7,55 +7,50 @@ enum RoundStatus {
   Lose,
   Timeout,
 }
-
 enum Player {
   Cpu,
   Player,
 }
-
+enum ActionType {
+  RoundWin,
+  RoundLose,
+  Reset,
+}
 type GameHistoryItem = { player: Player; winner: Player; word: string };
 type GameHistory = GameHistoryItem[];
-
 type gameState = {
   round: number;
   history: GameHistory;
   currentWord: string;
   nextStartCharacter: string;
 };
-
-const initialGameState: gameState = {
-  round: 0,
-  history: [],
-  currentWord: "Mert",
-  nextStartCharacter: "t",
-};
-
-enum ActionType {
-  Reset,
-  NextRound,
-}
-
 type ActionPayload = {
   status: RoundStatus;
   word?: string;
 };
-
 type Action = {
   type: ActionType;
   payload: ActionPayload;
 };
 
+const initialGameState: gameState = {
+  round: 0,
+  history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
+  currentWord: "Mert",
+  nextStartCharacter: "t",
+};
+
 function reducer(draft: gameState, action: Action) {
+  const nextPlayer = draft.history.at(-1).player;
+  const currentPlayer = nextPlayer === Player.Cpu && Player.Player;
+
   switch (action.type) {
     case ActionType.Reset:
       return initialGameState;
-    case ActionType.NextRound:
-      const nextPlayer = draft.history.at(-1).player;
-      const currentPlayer = nextPlayer === Player.Cpu && Player.Player;
-      draft.round++;
-      const { word, status } = action.payload;
-
-      if (status === RoundStatus.Win) {
+    case ActionType.RoundWin:
+      {
+        draft.round++;
+        const { word } = action.payload;
         draft.currentWord = word;
         draft.nextStartCharacter = word.at(-1);
         const newHistoryItem = {
@@ -64,7 +59,11 @@ function reducer(draft: gameState, action: Action) {
           word,
         };
         draft.history.push(newHistoryItem);
-      } else {
+      }
+      break;
+    case ActionType.RoundLose:
+      {
+        draft.round++;
         const newHistoryItem = {
           player: currentPlayer,
           winner: nextPlayer,
@@ -80,38 +79,46 @@ function reducer(draft: gameState, action: Action) {
 
 export default function useGameEngine() {
   const [state, dispatch] = useImmerReducer(reducer, initialGameState);
+  const recognition = useRef(new Recognition()).current;
 
   useEffect(() => {
-    const recognition = new Recognition();
     recognition.emitter.on("recognition", (event) => {
-      console.log(event);
+      console.log(event, "event");
+      const { confidence, transcript } = event.results[0][0];
+      playRound(transcript);
     });
-    recognition.start();
-
+    listen();
     // const utterance = new Utterance();
     // utterance.speak("merhaba test yapıyorum merhaba");
   }, []);
 
-  function nextRound(word: string) {
-    let payload;
+  function listen() {
+    recognition.start();
+  }
 
+  function playRound(word: string) {
+    let payload;
     if (!word) {
       // handle no answer
     }
+    const isCorrectWord = word[0] === state.nextStartCharacter; // TODO CHECK DATABASE, CHECK IF IN HISTORY
 
-    if (word[0] === state.nextStartCharacter) {
+    if (isCorrectWord) {
       payload = { status: RoundStatus.Win, word };
-    } else {
-      payload = { status: RoundStatus.Lose, word };
+      dispatch({
+        type: ActionType.RoundWin,
+        payload,
+      });
     }
-
-    // TODO HANDLE TIMEOUT
-
-    dispatch({
-      type: ActionType.NextRound,
-      payload,
-    });
+    // TODO ELSE IF: HANDLE TIMEOUT
+    else {
+      payload = { status: RoundStatus.Lose, word };
+      dispatch({
+        type: ActionType.RoundLose,
+        payload,
+      });
+    }
   }
 
-  return { state, nextRound };
+  return { state, nextRound: playRound };
 }

@@ -27,8 +27,6 @@ export default class RecognitionControler {
   }
 
   private recognitionEventHandler = (event) => {
-    console.log(this, "thişs");
-    console.log(this.emitter, "this.emitter");
     this.emitter.emit("recognition", event);
   };
 
