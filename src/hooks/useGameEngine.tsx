@@ -8,9 +8,17 @@ enum RoundStatus {
   Timeout,
 }
 
+enum Player {
+  Cpu,
+  Player,
+}
+
+type GameHistoryItem = { player: Player; winner: Player; word: string };
+type GameHistory = GameHistoryItem[];
+
 type gameState = {
   round: number;
-  history: [];
+  history: GameHistory;
   currentWord: string;
   nextStartCharacter: string;
 };
@@ -29,7 +37,7 @@ enum ActionType {
 
 type ActionPayload = {
   status: RoundStatus;
-  nextWord?: string;
+  word?: string;
 };
 
 type Action = {
@@ -42,12 +50,27 @@ function reducer(draft: gameState, action: Action) {
     case ActionType.Reset:
       return initialGameState;
     case ActionType.NextRound:
+      const nextPlayer = draft.history.at(-1).player;
+      const currentPlayer = nextPlayer === Player.Cpu && Player.Player;
       draft.round++;
-      const { nextWord, status } = action.payload;
+      const { word, status } = action.payload;
+
       if (status === RoundStatus.Win) {
-        draft.currentWord = nextWord;
-        draft.nextStartCharacter = nextWord.at(-1);
+        draft.currentWord = word;
+        draft.nextStartCharacter = word.at(-1);
+        const newHistoryItem = {
+          player: currentPlayer,
+          winner: currentPlayer,
+          word,
+        };
+        draft.history.push(newHistoryItem);
       } else {
+        const newHistoryItem = {
+          player: currentPlayer,
+          winner: nextPlayer,
+          word: draft.currentWord,
+        };
+        draft.history.push(newHistoryItem);
       }
       break;
     default:
@@ -71,15 +94,18 @@ export default function useGameEngine() {
 
   function nextRound(word: string) {
     let payload;
+
     if (!word) {
       // handle no answer
     }
 
     if (word[0] === state.nextStartCharacter) {
-      payload = { status: RoundStatus.Win, nextWord: word };
+      payload = { status: RoundStatus.Win, word };
     } else {
-      payload = { status: RoundStatus.Lose };
+      payload = { status: RoundStatus.Lose, word };
     }
+
+    // TODO HANDLE TIMEOUT
 
     dispatch({
       type: ActionType.NextRound,
