@@ -7,6 +7,9 @@ interface Props {}
 const Game = (props: Props) => {
   useEffect(() => {
     const recognition = new Recognition();
+    recognition.emitter.on("recognition", (event) => {
+      console.log(event);
+    });
     recognition.start();
 
     const utterance = new Utterance();

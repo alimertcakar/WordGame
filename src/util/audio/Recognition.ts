@@ -1,17 +1,18 @@
 import names from "src/names.json";
 let mappedNames = names.join(" | ");
+import EventEmitter from "events";
 
-export default class RecognitionControler extends EventTarget {
+// used custom events impl. cuz EventTarget is not supported yet on nextjs.
+
+export default class RecognitionControler {
   private recognition;
-  private resultEvent;
+  public emitter;
 
   constructor() {
-    super();
-    // let names = "x | y | z.";
-
+    this.emitter = new EventEmitter();
     // var grammar =
     //   "#JSGF V1.0; grammar names; public <name> =" + mappedNames + " ;";
-    var recognition = new window["webkitSpeechRecognition"]();
+    let recognition = new window["webkitSpeechRecognition"]();
     // var speechRecognitionList = new window["webkitSpeechGrammarList"]();
     // speechRecognitionList.addFromString(grammar, 1);
     // recognition.grammars = speechRecognitionList;
@@ -19,19 +20,17 @@ export default class RecognitionControler extends EventTarget {
 
     recognition.lang = "tr";
     this.recognition = recognition;
-    recognition.onresult = function (event) {
-      alert("result");
-      console.log(event.results);
-    };
-    recognition.onerror = function (event) {
-      alert("error");
-      console.log(event);
-    };
-    recognition.nomatch = function (event) {
-      alert("nomatch");
-      console.log(event);
-    };
+
+    recognition.onresult = this.recognitionEventHandler;
+    recognition.onerror = this.recognitionEventHandler;
+    recognition.nomatch = this.recognitionEventHandler;
   }
+
+  private recognitionEventHandler = (event) => {
+    console.log(this, "thişs");
+    console.log(this.emitter, "this.emitter");
+    this.emitter.emit("recognition", event);
+  };
 
   public start() {
     this.recognition.start();
