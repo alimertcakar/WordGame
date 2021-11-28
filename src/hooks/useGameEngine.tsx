@@ -1,24 +1,62 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import Recognition from "src/util/audio/Recognition";
+import { useImmerReducer } from "use-immer";
 
-const gameState = {
+enum RoundStatus {
+  Win,
+  Lose,
+  Timeout,
+}
+
+type gameState = {
+  round: number;
+  history: [];
+  currentWord: string;
+  nextStartCharacter: string;
+};
+
+const initialGameState: gameState = {
   round: 0,
   history: [],
   currentWord: "Mert",
   nextStartCharacter: "t",
 };
 
-function reducer(state, action) {
+enum ActionType {
+  Reset,
+  NextRound,
+}
+
+type ActionPayload = {
+  status: RoundStatus;
+  nextWord?: string;
+};
+
+type Action = {
+  type: ActionType;
+  payload: ActionPayload;
+};
+
+function reducer(draft: gameState, action: Action) {
   switch (action.type) {
-    case "next-round":
-      return { round: state.round + 1 };
+    case ActionType.Reset:
+      return initialGameState;
+    case ActionType.NextRound:
+      draft.round++;
+      const { nextWord, status } = action.payload;
+      if (status === RoundStatus.Win) {
+        draft.currentWord = nextWord;
+        draft.nextStartCharacter = nextWord.at(-1);
+      } else {
+      }
+      break;
     default:
       throw new Error();
   }
 }
 
 export default function useGameEngine() {
-  const [state, dispatch] = useReducer(reducer, gameState);
+  const [state, dispatch] = useImmerReducer(reducer, initialGameState);
 
   useEffect(() => {
     const recognition = new Recognition();
@@ -32,12 +70,22 @@ export default function useGameEngine() {
   }, []);
 
   function nextRound(word: string) {
+    let payload;
     if (!word) {
       // handle no answer
     }
+
     if (word[0] === state.nextStartCharacter) {
+      payload = { status: RoundStatus.Win, nextWord: word };
+    } else {
+      payload = { status: RoundStatus.Lose };
     }
 
-    dispatch({ type: "next-round", payload: {} });
+    dispatch({
+      type: ActionType.NextRound,
+      payload,
+    });
   }
+
+  return { state, nextRound };
 }
