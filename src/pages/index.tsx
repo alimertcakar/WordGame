@@ -1,21 +1,19 @@
 import { Container, Grid } from "@chakra-ui/react";
 import React from "react";
-import Cars from "src/components/Cars";
-import CarsFilter from "src/components/CarsFilter";
+import Game from "src/components/Game";
 
 interface Props {}
 
-const CarsPage = (props: Props) => {
+const GamePage = (props: Props) => {
   return (
     <>
       <Container maxW="container.2xl">
         <Grid templateColumns="1fr 3fr">
-          <CarsFilter />
-          <Cars />
+          <Game />
         </Grid>
       </Container>
     </>
   );
 };
 
-export default CarsPage;
+export default GamePage;
