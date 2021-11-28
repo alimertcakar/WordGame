@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
 import useSWR, { SWRConfig } from "swr";
-import http from "src/http/client";
+import http from "src/util/http/client";
 import { useEffect } from "react";
 import Head from "next/head";
 import theme from "src/theme";
@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import { RootState, store, persistor } from "src/store";
 import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react";
 
-import { injectStore } from "src/http/client";
+import { injectStore } from "src/util/http/client";
 injectStore(store);
 
 function MyApp({ Component, pageProps }: AppProps) {

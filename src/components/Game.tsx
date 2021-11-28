@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import Recognition from "src/audio/Recognition";
-import Utterance from "src/audio/Utterance";
+import Recognition from "src/util/audio/Recognition";
+import Utterance from "src/util/audio/Utterance";
 
 interface Props {}
 
