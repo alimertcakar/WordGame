@@ -15,7 +15,7 @@ export default class RecognitionControler {
     recognition.lang = "tr";
     this.recognition = recognition;
     recognition.onresult = function (event) {
-      alert("xxx");
+      alert("result");
       console.log(event.results);
     };
     recognition.onerror = function (event) {

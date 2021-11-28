@@ -61,3 +61,5 @@
 // export const authSelector = (state: RootState) => state.auth;
 
 // export default carSlice.reducer;
+
+export {};

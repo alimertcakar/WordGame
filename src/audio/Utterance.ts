@@ -7,8 +7,6 @@ export default class Utterance {
     this.synth.onvoiceschanged = function () {
       this.voice = this.synth.getVoices()[0];
     };
-
-    console.log(this.synth.getVoices(), "voices");
   }
 
   public speak(word: string) {
