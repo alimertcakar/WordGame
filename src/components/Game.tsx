@@ -6,6 +6,7 @@ import useGameEngine, { Player } from "src/hooks/useGameEngine";
 import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 import CountdownRenderer from "./CountdownRenderer";
+import GameCountdown from "./GameCountdown";
 import Microphone from "./Microphone";
 import Rules from "./Rules";
 import Scoreboard from "./Scoreboard";
@@ -15,7 +16,7 @@ interface Props {}
 const Game = (props: Props) => {
   const { state, nextRound, resetGame } = useGameEngine();
 
-  const { currentWord, currentPlayer, round, roundEnd } = state;
+  const { currentWord, currentPlayer, round, roundEnd, roundBreak } = state;
 
   return (
     <DivContainer>
@@ -33,10 +34,8 @@ const Game = (props: Props) => {
         <Box fontSize="xl" fontWeight="medium">
           {currentPlayer === Player.Player ? "Your" : "Computers"} turn
         </Box>
-        <div>
-          <Microphone state={state} />
-        </div>
-        <Countdown date={roundEnd} key={round} renderer={CountdownRenderer} />
+        <Microphone state={state} />
+        <GameCountdown state={state} />
       </BoxTurn>
 
       <Scoreboard state={state} />
