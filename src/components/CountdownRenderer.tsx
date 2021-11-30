@@ -11,13 +11,13 @@ const CountdownRenderer = (props: Props) => {
   if (seconds < 6) {
     return (
       <Box mt={4} fontWeight="bold" color="red.500">
-        {seconds} seconds left
+        {seconds}
       </Box>
     );
   }
   return (
     <Box mt={4} fontWeight="bold" color="gray.600">
-      {seconds} seconds left
+      {seconds}
     </Box>
   );
 };
