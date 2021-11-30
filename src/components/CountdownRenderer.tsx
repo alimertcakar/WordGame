@@ -8,12 +8,11 @@ interface Props {
 
 const CountdownRenderer = (props: Props) => {
   const { seconds } = props;
-  console.log(props);
   if (seconds < 6) {
     return (
-      <BoxCountdownEnding mt={4} fontWeight="bold" color="red.500">
+      <Box mt={4} fontWeight="bold" color="red.500">
         {seconds} seconds left
-      </BoxCountdownEnding>
+      </Box>
     );
   }
   return (
@@ -24,5 +23,3 @@ const CountdownRenderer = (props: Props) => {
 };
 
 export default CountdownRenderer;
-
-const BoxCountdownEnding = styled(Box)``;

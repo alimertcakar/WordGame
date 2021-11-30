@@ -6,6 +6,7 @@ import useGameEngine, { Player } from "src/hooks/useGameEngine";
 import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 import CountdownRenderer from "./CountdownRenderer";
+import Microphone from "./Microphone";
 
 interface Props {}
 
@@ -30,7 +31,9 @@ const Game = (props: Props) => {
         <Box fontSize="xl" fontWeight="medium">
           {currentPlayer === Player.Player ? "Your" : "Computers"} turn
         </Box>
-        <div>---microphone icon---</div>
+        <div>
+          <Microphone state={state} />
+        </div>
         <Box>
           <Countdown date={roundEnd} key={round} renderer={CountdownRenderer} />
         </Box>

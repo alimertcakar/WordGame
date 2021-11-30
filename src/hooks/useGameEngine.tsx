@@ -20,7 +20,7 @@ enum ActionType {
 }
 type GameHistoryItem = { player: Player; winner: Player; word: string };
 type GameHistory = GameHistoryItem[];
-type gameState = {
+export type GameState = {
   round: number;
   history: GameHistory;
   currentWord: string;
@@ -37,7 +37,7 @@ type Action = {
   payload: ActionPayload;
 };
 
-const initialGameState: gameState = {
+const initialGameState: GameState = {
   round: 0,
   history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
   currentPlayer: Player.Player,
@@ -46,7 +46,7 @@ const initialGameState: gameState = {
   nextStartCharacter: "t",
 };
 
-function reducer(draft: gameState, action: Action) {
+function reducer(draft: GameState, action: Action) {
   const nextPlayer = draft.history.at(-1).player;
   const currentPlayer = nextPlayer === Player.Cpu && Player.Player;
 
