@@ -1,9 +1,13 @@
 const environment = {
+  game: {
+    maxRoundsUntilTie: 20,
+    timePerRound: 15,
+  },
   cpu: {
-    CPU_GUESS_FAIL_MULTIPLIER: 1.03,
+    guessFailRateMultiplier: 1.03,
   },
   player: {
-    MAX_FAIL: 3,
+    lives: 3,
   },
 };
 
