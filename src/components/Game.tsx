@@ -1,20 +1,23 @@
 import { Box } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
+import Countdown from "react-countdown";
 import useGameEngine, { Player } from "src/hooks/useGameEngine";
 import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
+import CountdownRenderer from "./CountdownRenderer";
 
 interface Props {}
 
 const Game = (props: Props) => {
   const { state, nextRound } = useGameEngine();
 
-  const { currentWord, currentPlayer } = state;
+  const { currentWord, currentPlayer, round, roundEnd } = state;
 
   return (
     <DivContainer>
       <BoxCurrentWord p={3} color="white">
+        <BoxCurrentRound>Round: {round}</BoxCurrentRound>
         <Box fontSize="sm" textTransform="uppercase" color="gray.300">
           Current Word
         </Box>
@@ -28,7 +31,9 @@ const Game = (props: Props) => {
           {currentPlayer === Player.Player ? "Your" : "Computers"} turn
         </Box>
         <div>---microphone icon---</div>
-        <Box>15 seconds left</Box>
+        <Box>
+          <Countdown date={roundEnd} key={round} renderer={CountdownRenderer} />
+        </Box>
       </BoxTurn>
     </DivContainer>
   );
@@ -50,6 +55,15 @@ const BoxCurrentWord = styled(Box)`
 `;
 
 const BoxTurn = styled(Box)`
+  flex-direction: column;
+  & > div {
+    text-align: center;
+  }
+`;
+
+const BoxCurrentRound = styled(Box)`
+  position: absolute;
+  left: 10px;
   flex-direction: column;
   & > div {
     text-align: center;

@@ -1,4 +1,5 @@
-const environment = {
+const constants = {
+  msToSecond: 1000,
   game: {
     maxRoundsUntilTie: 20,
     timePerRound: 15,
@@ -11,4 +12,4 @@ const environment = {
   },
 };
 
-export default environment;
+export default constants;
