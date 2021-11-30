@@ -20,9 +20,11 @@ const GameCountdown = ({ state }: Props) => {
   console.log(roundBreak - roundEnd, "roundtime2");
 
   useEffect(() => {
+    setStatus(CountDownStatus.break);
+
     const changeStatusTimeout = setTimeout(() => {
       setStatus(CountDownStatus.round);
-    }, constants.game.timeRoundBreak);
+    }, constants.game.timeRoundBreak * constants.msToSecond);
 
     return () => {
       clearTimeout(changeStatusTimeout);
