@@ -7,6 +7,7 @@ import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 import CountdownRenderer from "./CountdownRenderer";
 import Microphone from "./Microphone";
+import Rules from "./Rules";
 import Scoreboard from "./Scoreboard";
 
 interface Props {}
@@ -39,6 +40,8 @@ const Game = (props: Props) => {
       </BoxTurn>
 
       <Scoreboard state={state} />
+
+      <Rules />
 
       <Flex justifyContent="center" mt={10}>
         <Button onClick={() => resetGame()} mr={1}>

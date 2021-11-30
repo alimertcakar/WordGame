@@ -3,6 +3,10 @@ import Recognition from "src/util/audio/Recognition";
 import { useImmerReducer } from "use-immer";
 import constants from "src/domain/gameConstants";
 
+const breakTime = constants.game.timeRoundBreak * constants.msToSecond;
+const roundTime =
+  breakTime + constants.game.timePerRound * constants.msToSecond;
+
 enum RoundStatus {
   Win,
   Lose,
@@ -27,6 +31,7 @@ export type GameState = {
   currentPlayer: Player;
   players: PlayerList[];
   roundEnd: number;
+  roundBreak: number;
   nextStartCharacter: string;
 };
 type ActionPayload = {
@@ -51,7 +56,8 @@ const initialGameState: GameState = {
     { type: Player.Cpu, lives: 1, score: 0 },
   ],
   history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
-  roundEnd: Date.now() + constants.game.timePerRound * constants.msToSecond,
+  roundBreak: Date.now() + breakTime,
+  roundEnd: Date.now() + roundTime,
   currentWord: "Mert",
   nextStartCharacter: "t",
 };
@@ -69,8 +75,8 @@ function reducer(draft: GameState, action: Action) {
   // UPDATE ROUND
   draft.round++;
   draft.currentPlayer = nextPlayer;
-  draft.roundEnd =
-    Date.now() + constants.game.timePerRound * constants.msToSecond;
+  draft.roundEnd = Date.now() + roundTime;
+  draft.roundBreak = Date.now() + breakTime;
 
   const historyWin = (word) => {
     return {
@@ -132,7 +138,7 @@ export default function useGameEngine() {
     const gameTimeout = setTimeout(() => {
       const payload = { status: RoundStatus.Timeout };
       dispatch({ type: ActionType.Timeout, payload });
-    }, constants.game.timePerRound * constants.msToSecond);
+    }, roundTime);
     return () => {
       clearTimeout(gameTimeout);
     };

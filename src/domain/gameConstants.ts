@@ -3,6 +3,7 @@ const constants = {
   game: {
     maxRoundsUntilTie: 20,
     timePerRound: 3,
+    timeRoundBreak: 10,
   },
   cpu: {
     guessFailRateMultiplier: 1.03,

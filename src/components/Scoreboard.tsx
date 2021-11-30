@@ -21,9 +21,8 @@ interface Props {
 const Scoreboard = ({ state }: Props) => {
   return (
     <Container maxW="xs" mt={4}>
-      <Box m={2} border="1px" borderColor="gray.200">
+      <Box m={2} border="1px" borderColor="gray.200" borderRadius="md">
         <Table variant="simple" size="md">
-          <TableCaption>Scores</TableCaption>
           <Thead>
             <Tr>
               <Th>Player</Th>
