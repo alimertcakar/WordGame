@@ -22,6 +22,7 @@ type gameState = {
   round: number;
   history: GameHistory;
   currentWord: string;
+  currentPlayer: Player;
   nextStartCharacter: string;
 };
 type ActionPayload = {
@@ -36,6 +37,7 @@ type Action = {
 const initialGameState: gameState = {
   round: 0,
   history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
+  currentPlayer: Player.Cpu,
   currentWord: "Mert",
   nextStartCharacter: "t",
 };
@@ -44,12 +46,15 @@ function reducer(draft: gameState, action: Action) {
   const nextPlayer = draft.history.at(-1).player;
   const currentPlayer = nextPlayer === Player.Cpu && Player.Player;
 
+  // update next round
+  draft.round++;
+  draft.currentPlayer = nextPlayer;
+
   switch (action.type) {
     case ActionType.Reset:
       return initialGameState;
     case ActionType.RoundWin:
       {
-        draft.round++;
         const { word } = action.payload;
         draft.currentWord = word;
         draft.nextStartCharacter = word.at(-1);
@@ -63,7 +68,6 @@ function reducer(draft: gameState, action: Action) {
       break;
     case ActionType.RoundLose:
       {
-        draft.round++;
         const newHistoryItem = {
           player: currentPlayer,
           winner: nextPlayer,
@@ -82,12 +86,12 @@ export default function useGameEngine() {
   const recognition = useRef(new Recognition()).current;
 
   useEffect(() => {
-    recognition.emitter.on("recognition", (event) => {
-      console.log(event, "event");
-      const { confidence, transcript } = event.results[0][0];
-      playRound(transcript);
-    });
-    listen();
+    // recognition.emitter.on("recognition", (event) => {
+    //   console.log(event, "event");
+    //   const { confidence, transcript } = event.results[0][0];
+    //   playRound(transcript);
+    // });
+    // listen();
     // const utterance = new Utterance();
     // utterance.speak("merhaba test yapıyorum merhaba");
   }, []);
