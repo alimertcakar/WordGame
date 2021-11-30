@@ -48,7 +48,9 @@ const initialGameState: GameState = {
 
 function reducer(draft: GameState, action: Action) {
   const nextPlayer = draft.history.at(-1).player;
-  const currentPlayer = nextPlayer === Player.Cpu && Player.Player;
+  console.log(nextPlayer, "nextPlayer");
+
+  const currentPlayer = nextPlayer === Player.Cpu ? Player.Player : Player.Cpu;
 
   // UPDATE ROUND
   draft.round++;

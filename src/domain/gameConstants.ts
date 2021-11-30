@@ -2,7 +2,7 @@ const constants = {
   msToSecond: 1000,
   game: {
     maxRoundsUntilTie: 20,
-    timePerRound: 15,
+    timePerRound: 3,
   },
   cpu: {
     guessFailRateMultiplier: 1.03,
