@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
 import Countdown from "react-countdown";
@@ -7,11 +7,12 @@ import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 import CountdownRenderer from "./CountdownRenderer";
 import Microphone from "./Microphone";
+import Scoreboard from "./Scoreboard";
 
 interface Props {}
 
 const Game = (props: Props) => {
-  const { state, nextRound } = useGameEngine();
+  const { state, nextRound, resetGame } = useGameEngine();
 
   const { currentWord, currentPlayer, round, roundEnd } = state;
 
@@ -34,10 +35,17 @@ const Game = (props: Props) => {
         <div>
           <Microphone state={state} />
         </div>
-        <Box>
-          <Countdown date={roundEnd} key={round} renderer={CountdownRenderer} />
-        </Box>
+        <Countdown date={roundEnd} key={round} renderer={CountdownRenderer} />
       </BoxTurn>
+
+      <Scoreboard state={state} />
+
+      <Flex justifyContent="center" mt={10}>
+        <Button onClick={() => resetGame()} mr={1}>
+          Reset Game
+        </Button>
+        <Button onClick={() => resetGame()}>Pause Game</Button>
+      </Flex>
     </DivContainer>
   );
 };

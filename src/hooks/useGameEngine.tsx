@@ -25,6 +25,7 @@ export type GameState = {
   history: GameHistory;
   currentWord: string;
   currentPlayer: Player;
+  players: PlayerList[];
   roundEnd: number;
   nextStartCharacter: string;
 };
@@ -34,19 +35,32 @@ type ActionPayload = {
 };
 type Action = {
   type: ActionType;
-  payload: ActionPayload;
+  payload?: ActionPayload;
+};
+type PlayerList = {
+  type: Player;
+  lives: number;
+  score: number;
 };
 
 const initialGameState: GameState = {
   round: 0,
-  history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
   currentPlayer: Player.Player,
+  players: [
+    { type: Player.Player, lives: 3, score: 0 },
+    { type: Player.Cpu, lives: 1, score: 0 },
+  ],
+  history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
   roundEnd: Date.now() + constants.game.timePerRound * constants.msToSecond,
   currentWord: "Mert",
   nextStartCharacter: "t",
 };
 
 function reducer(draft: GameState, action: Action) {
+  if (action.type === ActionType.Reset) {
+    return initialGameState;
+  }
+
   const nextPlayer = draft.history.at(-1).player;
   console.log(nextPlayer, "nextPlayer");
 
@@ -74,8 +88,6 @@ function reducer(draft: GameState, action: Action) {
   };
 
   switch (action.type) {
-    case ActionType.Reset:
-      return initialGameState;
     case ActionType.RoundWin:
       {
         const { word } = action.payload;
@@ -152,5 +164,11 @@ export default function useGameEngine() {
     }
   }
 
-  return { state, nextRound: playRound };
+  function resetGame() {
+    dispatch({
+      type: ActionType.Reset,
+    });
+  }
+
+  return { state, nextRound: playRound, resetGame };
 }
