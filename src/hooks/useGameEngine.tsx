@@ -7,7 +7,7 @@ enum RoundStatus {
   Lose,
   Timeout,
 }
-enum Player {
+export enum Player {
   Cpu,
   Player,
 }
@@ -37,7 +37,7 @@ type Action = {
 const initialGameState: gameState = {
   round: 0,
   history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
-  currentPlayer: Player.Cpu,
+  currentPlayer: Player.Player,
   currentWord: "Mert",
   nextStartCharacter: "t",
 };

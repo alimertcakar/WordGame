@@ -1,16 +1,16 @@
 import { Box } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
-import useGameEngine from "src/hooks/useGameEngine";
+import useGameEngine, { Player } from "src/hooks/useGameEngine";
 import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 
 interface Props {}
 
 const Game = (props: Props) => {
-  // const { state, nextRound } = useGameEngine();
+  const { state, nextRound } = useGameEngine();
 
-  // const { currentWord } = state;
+  const { currentWord, currentPlayer } = state;
 
   return (
     <DivContainer>
@@ -19,13 +19,13 @@ const Game = (props: Props) => {
           Current Word
         </Box>
         <Box fontWeight="bold" textTransform="capitalize">
-          {"currentWord"}
+          {currentWord}
         </Box>
       </BoxCurrentWord>
 
       <BoxTurn pt={10}>
         <Box fontSize="xl" fontWeight="medium">
-          Your turn
+          {currentPlayer === Player.Player ? "Your" : "Computers"} turn
         </Box>
         <div>---microphone icon---</div>
         <Box>15 seconds left</Box>
