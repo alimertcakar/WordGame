@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Recognition from "src/util/audio/Recognition";
 import { useImmerReducer } from "use-immer";
-import constants from "src/domain/gameConstants";
+import consts from "src/domain/gameConstants";
 
-const breakTime = constants.game.timeRoundBreak * constants.msToSecond;
-const roundTime =
-  breakTime + constants.game.timePerRound * constants.msToSecond;
+const breakTime = consts.timeRoundBreak;
+const roundTime = breakTime + consts.timePerRound;
 
 enum RoundStatus {
   Win,

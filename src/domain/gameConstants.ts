@@ -1,9 +1,11 @@
-const constants = {
-  msToSecond: 1000,
+const secondToMs = 1000;
+
+const consts = {
+  secondToMs,
+  timePerRound: 3 * secondToMs,
+  timeRoundBreak: 10 * secondToMs,
   game: {
     maxRoundsUntilTie: 20,
-    timePerRound: 3,
-    timeRoundBreak: 10,
   },
   cpu: {
     guessFailRateMultiplier: 1.03,
@@ -13,4 +15,4 @@ const constants = {
   },
 };
 
-export default constants;
+export default consts;

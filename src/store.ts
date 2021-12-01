@@ -12,7 +12,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import carSlice from "./slices/car";
+import gameSlice from "./slices/game";
 const persistConfig = {
   key: "root",
   version: 1,
@@ -20,7 +20,7 @@ const persistConfig = {
 };
 
 const rootReducer = {
-  car: carSlice,
+  game: gameSlice,
 };
 
 const persistedReducer = persistReducer(

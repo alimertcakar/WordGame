@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Countdown from "react-countdown";
-import constants from "src/domain/gameConstants";
+import consts from "src/domain/gameConstants";
 import { GameState } from "src/hooks/useGameEngine";
 import CountdownRenderer from "./CountdownRenderer";
 
@@ -24,7 +24,7 @@ const GameCountdown = ({ state }: Props) => {
 
     const changeStatusTimeout = setTimeout(() => {
       setStatus(CountDownStatus.round);
-    }, constants.game.timeRoundBreak * constants.msToSecond);
+    }, consts.timeRoundBreak);
 
     return () => {
       clearTimeout(changeStatusTimeout);
