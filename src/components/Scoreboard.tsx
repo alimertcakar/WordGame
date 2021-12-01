@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 
 import React from "react";
-import { GameState } from "src/hooks/useGameEngine";
+import { GameState } from "src/hooks/useGameEngineOld";
 
 interface Props {
   state: GameState;

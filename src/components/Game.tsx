@@ -2,7 +2,7 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
 import Countdown from "react-countdown";
-import useGameEngine, { Player } from "src/hooks/useGameEngine";
+import useGameEngine, { Player } from "src/hooks/useGameEngineOld";
 import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 import CountdownRenderer from "./CountdownRenderer";
@@ -34,11 +34,11 @@ const Game = (props: Props) => {
         <Box fontSize="xl" fontWeight="medium">
           {currentPlayer === Player.Player ? "Your" : "Computers"} turn
         </Box>
-        <Microphone state={state} />
-        <GameCountdown state={state} />
+        {/* <Microphone state={state} /> */}
+        {/* <GameCountdown state={state} /> */}
       </BoxTurn>
 
-      <Scoreboard state={state} />
+      {/* <Scoreboard state={state} /> */}
 
       <Rules />
 

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import consts from "src/domain/gameConstants";
 import { RootState } from "src/store";
+import { batch } from "react-redux";
 
 export enum Player {
   Cpu,
@@ -102,3 +103,14 @@ export const {
 export const gameSelector = (state: RootState) => state;
 
 export default gameSlice.reducer;
+
+//
+
+function playRound() {
+  return (dispatch, getState) => {
+    batch(() => {
+      //   dispatch(something())
+      //   dispatch(something())
+    });
+  };
+}

@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import React from "react";
 import { FaMicrophone, FaMicrophoneAltSlash } from "react-icons/fa";
-import { GameState, Player } from "src/hooks/useGameEngine";
+import { GameState, Player } from "src/hooks/useGameEngineOld";
 
 interface Props {
   state: GameState;
