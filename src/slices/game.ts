@@ -17,16 +17,12 @@ export interface GameState {
   nextPlayer: Player;
   nextStartCharacter: string;
   history: GameHistory;
-  roundEnd: number;
-  roundBreak: number;
 }
 
 const initialState: GameState = {
   round: 0,
   currentPlayer: Player.Player,
   nextPlayer: Player.Cpu,
-  roundBreak: Date.now() + consts.timeRoundBreak,
-  roundEnd: Date.now() + consts.timeRoundBreak + consts.timePerRound,
   history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
   currentWord: "Mert",
   nextStartCharacter: "t",
