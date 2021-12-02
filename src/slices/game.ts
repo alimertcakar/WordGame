@@ -12,15 +12,22 @@ type GameHistory = GameHistoryItem[];
 
 export interface GameState {
   round: number;
+  status: GameStatus;
   currentWord: string;
   currentPlayer: Player;
   nextPlayer: Player;
   nextStartCharacter: string;
   history: GameHistory;
 }
+export enum GameStatus {
+  NotStarted,
+  Break,
+  Play,
+}
 
 const initialState: GameState = {
   round: 0,
+  status: GameStatus.NotStarted,
   currentPlayer: Player.Player,
   nextPlayer: Player.Cpu,
   history: [{ player: Player.Cpu, winner: Player.Cpu, word: "Mert" }],
@@ -35,12 +42,14 @@ enum RoundStatus {
 }
 
 type RoundPayload = {
-  status: RoundStatus;
   word?: string;
+  roundStatus: RoundStatus;
 };
 type HistoryPayload = {
-  status: RoundStatus;
   word?: string;
+};
+type StatusPayload = {
+  status: GameStatus;
 };
 
 export const gameSlice = createSlice({
@@ -53,8 +62,11 @@ export const gameSlice = createSlice({
       state.currentPlayer = nextPlayer;
       state.nextPlayer = currentPlayer;
     },
+    setStatus(state, action: PayloadAction<StatusPayload>) {
+      const { status } = action.payload;
+    },
     addHistoryEntry: (state, action: PayloadAction<HistoryPayload>) => {
-      const { word, status } = action.payload;
+      const { word, roundStatus } = action.payload;
       const { currentPlayer, nextPlayer } = state;
 
       const historyWin = () => {
@@ -72,7 +84,10 @@ export const gameSlice = createSlice({
         };
       };
 
-      if (status === RoundStatus.Lose || status === RoundStatus.Timeout) {
+      if (
+        roundStatus === RoundStatus.Lose ||
+        roundStatus === RoundStatus.Timeout
+      ) {
         state.history.push(historyLose());
       } else {
         state.history.push(historyWin());
