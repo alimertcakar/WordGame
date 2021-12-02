@@ -96,7 +96,7 @@ export const {
   roundTimeout,
 } = gameSlice.actions;
 
-export const gameSelector = (state: RootState) => state;
+export const gameSelector = (state: RootState): GameState => state.game;
 
 export default gameSlice.reducer;
 

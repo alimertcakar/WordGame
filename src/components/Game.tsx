@@ -2,7 +2,9 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
 import Countdown from "react-countdown";
+import { useSelector } from "react-redux";
 import useGameEngine, { Player } from "src/hooks/useGameEngineOld";
+import { gameSelector } from "src/slices/game";
 import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 import CountdownRenderer from "./CountdownRenderer";
@@ -14,9 +16,9 @@ import Scoreboard from "./Scoreboard";
 interface Props {}
 
 const Game = (props: Props) => {
-  const { state, nextRound, resetGame } = useGameEngine();
-
-  const { currentWord, currentPlayer, round, roundEnd, roundBreak } = state;
+  const game = useSelector(gameSelector);
+  const { round, currentWord, currentPlayer } = game;
+  console.log(game, "game");
 
   return (
     <DivContainer>
@@ -43,10 +45,10 @@ const Game = (props: Props) => {
       <Rules />
 
       <Flex justifyContent="center" mt={10}>
-        <Button onClick={() => resetGame()} mr={1}>
+        {/* <Button onClick={() => resetGame()} mr={1}>
           Reset Game
         </Button>
-        <Button onClick={() => resetGame()}>Pause Game</Button>
+        <Button onClick={() => resetGame()}>Pause Game</Button> */}
       </Flex>
     </DivContainer>
   );
