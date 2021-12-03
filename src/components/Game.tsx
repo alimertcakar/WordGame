@@ -20,7 +20,7 @@ const Game = (props: Props) => {
   const { round, currentWord, currentPlayer } = game;
   const dispatch = useDispatch();
 
-  function play() {
+  function start() {
     dispatch(startRound());
   }
 
@@ -49,7 +49,7 @@ const Game = (props: Props) => {
       {/* <Rules /> */}
 
       <Flex justifyContent="center" mt={10}>
-        <Button onClick={() => play()}>Play Round</Button>
+        <Button onClick={() => start()}>Start Round</Button>
 
         {/* <Button onClick={() => resetGame()} mr={1}>
           Reset Game

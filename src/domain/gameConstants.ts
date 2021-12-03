@@ -2,8 +2,8 @@ const secondToMs = 1000;
 
 const consts = {
   secondToMs,
-  timePerRound: 3 * secondToMs,
-  timeRoundBreak: 10 * secondToMs,
+  timePerRound: 6 * secondToMs,
+  timeRoundBreak: 4 * secondToMs,
   game: {
     maxRoundsUntilTie: 20,
   },
@@ -16,3 +16,7 @@ const consts = {
 };
 
 export default consts;
+
+const isDev = process.env.NODE_ENV === "development";
+
+export { isDev };

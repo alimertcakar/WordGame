@@ -2,23 +2,20 @@ import { Box, Button, Input } from "@chakra-ui/react";
 import React from "react";
 import { FaMicrophone, FaMicrophoneAltSlash } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { GameState, Player } from "src/hooks/useGameEngineOld";
-import { gameSelector, GameStatus } from "src/slices/game";
+import { isDev } from "src/domain/gameConstants";
+import { gameSelector, GameStatus, Player } from "src/slices/game";
 import DevMicrophone from "./DevMicrophone";
 
 interface Props {}
-const isDev = process.env.NODE_ENV === "development";
 
 const Microphone = ({}: Props) => {
   const state = useSelector(gameSelector);
   console.log(state, "game");
-  // const playersTurn = state.currentPlayer === Player.Player;
+  const playersTurn = state.currentPlayer === Player.Player;
 
-  // if (state.status !== GameStatus.Playing) {
-  //   return null;
-  // }
-
-  const playersTurn = true;
+  if (state.status !== GameStatus.Playing) {
+    return null;
+  }
 
   return (
     <>

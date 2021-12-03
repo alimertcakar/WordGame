@@ -4,8 +4,8 @@ import { RootState } from "src/store";
 import { batch } from "react-redux";
 
 export enum Player {
-  Cpu,
-  Player,
+  Cpu = "CPU",
+  Player = "PLAYER",
 }
 type GameHistoryItem = { player: Player; winner: Player; word: string };
 type GameHistory = GameHistoryItem[];
@@ -37,9 +37,9 @@ const initialState: GameState = {
 };
 
 enum RoundStatus {
-  Win,
-  Lose,
-  Timeout,
+  Win = "WIN",
+  Lose = "LOSE",
+  Timeout = "TIMEOUT",
 }
 
 type RoundPayload = {
@@ -70,6 +70,14 @@ export const gameSlice = createSlice({
         state.status = status;
       }
     },
+    roundWin: (state, action: PayloadAction<RoundPayload>) => {
+      const { word } = action.payload;
+      state.currentWord = word;
+      state.nextStartCharacter = word.at(-1);
+    },
+    roundLose: (state, action: PayloadAction) => {},
+    roundTie: (state, action: PayloadAction) => {},
+    roundTimeout: (state, action: PayloadAction) => {},
     addHistoryEntry: (state, action: PayloadAction<HistoryPayload>) => {
       const { word, roundStatus } = action.payload;
       const { currentPlayer, nextPlayer } = state;
@@ -98,14 +106,6 @@ export const gameSlice = createSlice({
         state.history.push(historyWin());
       }
     },
-    roundWin: (state, action: PayloadAction<RoundPayload>) => {
-      const { word } = action.payload;
-      state.currentWord = word;
-      state.nextStartCharacter = word.at(-1);
-    },
-    roundLose: (state, action: PayloadAction) => {},
-    roundTie: (state, action: PayloadAction) => {},
-    roundTimeout: (state, action: PayloadAction) => {},
   },
 });
 
@@ -116,12 +116,15 @@ export const {
   roundLose,
   roundTie,
   roundTimeout,
+  addHistoryEntry,
 } = gameSlice.actions;
 
 export const gameSelector = (state: RootState): GameState => state.game;
 
 export default gameSlice.reducer;
 
+//
+// thunks
 //
 
 export function startRound() {
@@ -148,6 +151,43 @@ export function startRound() {
         dispatch(setStatus({ status: GameStatus.RoundEnd }));
       }, consts.timeRoundBreak + consts.timePerRound);
     });
+  };
+}
+
+export function playRound(word: string) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { status, currentWord } = state.game;
+    const targetLetter = currentWord.at(-1);
+    let didWin = false;
+
+    if (status !== GameStatus.Playing) {
+      throw new Error("Can't play a round if it's not in playing state");
+    } else if (!word) {
+      // TODO HANDLE EMPTY ANSWER
+    } else if (false) {
+      // TODO CHECK JSON, CHECK IF IN HISTORY
+    } else if (word[0] !== targetLetter) {
+    } else {
+      didWin = true;
+    }
+
+    if (didWin) {
+      // dispatch win
+      batch(() => {
+        dispatch(setStatus({ status: GameStatus.RoundEnd }));
+        dispatch(roundWin({ word }));
+        dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Win }));
+        // dispatch addHistoryEntry
+      });
+    } else {
+      // dispatch lose
+      batch(() => {
+        dispatch(setStatus({ status: GameStatus.RoundEnd }));
+        dispatch(roundLose());
+        dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Lose }));
+      });
+    }
   };
 }
 
