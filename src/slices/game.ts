@@ -20,9 +20,10 @@ export interface GameState {
   history: GameHistory;
 }
 export enum GameStatus {
-  NotStarted,
-  Break,
-  Playing,
+  NotStarted = "NOT_STARTED",
+  Break = "BREAK",
+  Playing = "PLAYING",
+  RoundEnd = "ROUND_END",
 }
 
 const initialState: GameState = {
@@ -64,7 +65,10 @@ export const gameSlice = createSlice({
     },
     setStatus(state, action: PayloadAction<StatusPayload>) {
       const { status } = action.payload;
-      state.status = status;
+      const shouldUpdateStatus = statusFilter(state.status, status);
+      if (shouldUpdateStatus) {
+        state.status = status;
+      }
     },
     addHistoryEntry: (state, action: PayloadAction<HistoryPayload>) => {
       const { word, roundStatus } = action.payload;
@@ -120,17 +124,57 @@ export default gameSlice.reducer;
 
 //
 
-function playRound() {
+export function startRound() {
   return (dispatch, getState) => {
+    const state = getState();
+    if (state.game.status !== GameStatus.NotStarted) {
+      throw new Error(
+        "Can't start a new round when the previous is still playing"
+      );
+    }
+
     batch(() => {
+      // Initiate new round
       dispatch(addRound());
       dispatch(setStatus({ status: GameStatus.Break }));
 
+      // Start the round after break
       setTimeout(() => {
         dispatch(setStatus({ status: GameStatus.Playing }));
       }, consts.timeRoundBreak);
-      //   dispatch(something())
-      //   dispatch(something())
+
+      // End the round
+      setTimeout(() => {
+        dispatch(setStatus({ status: GameStatus.RoundEnd }));
+      }, consts.timeRoundBreak + consts.timePerRound);
     });
   };
+}
+
+//
+// utilities...
+//
+
+function statusFilter(status: GameStatus, newStatus: GameStatus): boolean {
+  if (status === GameStatus.NotStarted && newStatus === GameStatus.NotStarted) {
+    return false; // Round already ended.
+  }
+
+  switch (status) {
+    case GameStatus.NotStarted:
+      if (newStatus === GameStatus.Break) return true;
+      break;
+    case GameStatus.Break:
+      if (newStatus === GameStatus.Playing) return true;
+      break;
+    case GameStatus.Playing:
+      if (newStatus === GameStatus.RoundEnd) return true;
+      break;
+    case GameStatus.RoundEnd:
+      break;
+    default:
+      throw new Error(
+        "Tried to update status but new status is not compatible with the previous one."
+      );
+  }
 }

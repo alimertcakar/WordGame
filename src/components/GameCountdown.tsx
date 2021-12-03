@@ -3,49 +3,31 @@ import Countdown from "react-countdown";
 import consts from "src/domain/gameConstants";
 import { GameState } from "src/hooks/useGameEngine";
 import CountdownRenderer from "./CountdownRenderer";
+import { useSelector } from "react-redux";
+import { gameSelector, GameStatus } from "src/slices/game";
 
-interface Props {
-  state: GameState;
-}
+interface Props {}
 
 enum CountDownStatus {
   break,
   round,
 }
 
-const GameCountdown = ({ state }: Props) => {
-  const [status, setStatus] = useState(CountDownStatus.break);
-  const { roundEnd, roundBreak, round } = state;
-  const roundTime = roundEnd - roundBreak;
-  console.log(roundBreak - roundEnd, "roundtime2");
+const GameCountdown = ({}: Props) => {
+  const game = useSelector(gameSelector);
+  const { status } = game;
 
-  useEffect(() => {
-    setStatus(CountDownStatus.break);
-
-    const changeStatusTimeout = setTimeout(() => {
-      setStatus(CountDownStatus.round);
-    }, consts.timeRoundBreak);
-
-    return () => {
-      clearTimeout(changeStatusTimeout);
-    };
-  }, [roundTime]);
-
-  if (status === CountDownStatus.round) {
-    return (
-      <div>
-        <Countdown date={roundEnd} key={round} renderer={CountdownRenderer} />
-        seconds left
-      </div>
-    );
-  } else if (status === CountDownStatus.break) {
-    return (
-      <div>
-        <Countdown date={roundBreak} key={round} renderer={CountdownRenderer} />
-        seconds until next round
-      </div>
-    );
+  if (status === GameStatus.Break) {
+    return <div>Game in break</div>;
   }
+  if (status === GameStatus.Playing) {
+    return <div>Game in play</div>;
+  }
+
+  // <div>
+  //   <Countdown date={roundEnd} key={round} renderer={CountdownRenderer} />
+  //   seconds left
+  // </div>;
 
   return null;
 };
