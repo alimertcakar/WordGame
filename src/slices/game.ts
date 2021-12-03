@@ -75,8 +75,6 @@ export const gameSlice = createSlice({
       state.nextStartCharacter = word.at(-1);
     },
     roundLose: (state, action: PayloadAction) => {},
-    roundTie: (state, action: PayloadAction) => {},
-    roundTimeout: (state, action: PayloadAction) => {},
     addHistoryEntry: (state, action: PayloadAction<HistoryPayload>) => {
       const { word, roundStatus } = action.payload;
       const { currentPlayer, nextPlayer } = state;
@@ -92,7 +90,7 @@ export const gameSlice = createSlice({
         return {
           player: currentPlayer,
           winner: nextPlayer,
-          word: state.currentWord,
+          word: "TIMEDOUT",
         };
       };
 
@@ -113,8 +111,6 @@ export const {
   addRound,
   roundWin,
   roundLose,
-  roundTie,
-  roundTimeout,
   addHistoryEntry,
 } = gameSlice.actions;
 
@@ -145,9 +141,19 @@ export function startRound() {
         dispatch(setStatus({ status: GameStatus.Playing }));
       }, consts.timeRoundBreak);
 
-      // End the round
+      // End the round forcefully, (user response is timed out)
       setTimeout(() => {
-        dispatch(setStatus({ status: GameStatus.NotStarted }));
+        const state = getState();
+        if (state.game.status === GameStatus.Playing) {
+          // dispatch lose (timed out)
+          dispatch(setStatus({ status: GameStatus.NotStarted }));
+          dispatch(roundLose());
+          dispatch(
+            addHistoryEntry({
+              roundStatus: RoundStatus.Timeout,
+            })
+          );
+        }
       }, consts.timeRoundBreak + consts.timePerRound);
     });
   };
@@ -155,8 +161,8 @@ export function startRound() {
 
 export function playRound(word: string) {
   return (dispatch, getState) => {
-    const state = getState();
-    const { status, currentWord } = state.game;
+    const game: GameState = getState().game;
+    const { status, currentWord } = game;
     const targetLetter = currentWord.at(-1);
     let didWin = false;
 
@@ -166,7 +172,9 @@ export function playRound(word: string) {
       // TODO HANDLE EMPTY ANSWER
     } else if (false) {
       // TODO CHECK JSON, CHECK IF IN HISTORY
-    } else if (word[0] !== targetLetter) {
+    } else if (
+      word[0].toLocaleLowerCase() !== targetLetter.toLocaleLowerCase()
+    ) {
     } else {
       didWin = true;
     }
@@ -177,7 +185,6 @@ export function playRound(word: string) {
         dispatch(setStatus({ status: GameStatus.NotStarted }));
         dispatch(roundWin({ word }));
         dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Win }));
-        // dispatch addHistoryEntry
       });
     } else {
       // dispatch lose

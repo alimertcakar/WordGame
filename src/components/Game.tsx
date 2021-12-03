@@ -32,7 +32,7 @@ const Game = (props: Props) => {
           Current Word
         </Box>
         <Box fontWeight="bold" textTransform="capitalize">
-          {currentWord}
+          {currentWord.toLocaleLowerCase()}
         </Box>
       </BoxCurrentWord>
 
