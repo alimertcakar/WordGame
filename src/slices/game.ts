@@ -22,7 +22,7 @@ export interface GameState {
 export enum GameStatus {
   NotStarted,
   Break,
-  Play,
+  Playing,
 }
 
 const initialState: GameState = {
@@ -43,10 +43,10 @@ enum RoundStatus {
 
 type RoundPayload = {
   word?: string;
-  roundStatus: RoundStatus;
 };
 type HistoryPayload = {
   word?: string;
+  roundStatus: RoundStatus;
 };
 type StatusPayload = {
   status: GameStatus;
@@ -64,6 +64,7 @@ export const gameSlice = createSlice({
     },
     setStatus(state, action: PayloadAction<StatusPayload>) {
       const { status } = action.payload;
+      state.status = status;
     },
     addHistoryEntry: (state, action: PayloadAction<HistoryPayload>) => {
       const { word, roundStatus } = action.payload;
@@ -105,6 +106,8 @@ export const gameSlice = createSlice({
 });
 
 export const {
+  setStatus,
+  addRound,
   roundWin,
   roundLose,
   roundTie,
@@ -120,6 +123,12 @@ export default gameSlice.reducer;
 function playRound() {
   return (dispatch, getState) => {
     batch(() => {
+      dispatch(addRound());
+      dispatch(setStatus({ status: GameStatus.Break }));
+
+      setTimeout(() => {
+        dispatch(setStatus({ status: GameStatus.Playing }));
+      }, consts.timeRoundBreak);
       //   dispatch(something())
       //   dispatch(something())
     });
