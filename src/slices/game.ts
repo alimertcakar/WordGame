@@ -23,7 +23,6 @@ export enum GameStatus {
   NotStarted = "NOT_STARTED",
   Break = "BREAK",
   Playing = "PLAYING",
-  RoundEnd = "ROUND_END",
 }
 
 const initialState: GameState = {
@@ -148,7 +147,7 @@ export function startRound() {
 
       // End the round
       setTimeout(() => {
-        dispatch(setStatus({ status: GameStatus.RoundEnd }));
+        dispatch(setStatus({ status: GameStatus.NotStarted }));
       }, consts.timeRoundBreak + consts.timePerRound);
     });
   };
@@ -175,7 +174,7 @@ export function playRound(word: string) {
     if (didWin) {
       // dispatch win
       batch(() => {
-        dispatch(setStatus({ status: GameStatus.RoundEnd }));
+        dispatch(setStatus({ status: GameStatus.NotStarted }));
         dispatch(roundWin({ word }));
         dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Win }));
         // dispatch addHistoryEntry
@@ -183,7 +182,7 @@ export function playRound(word: string) {
     } else {
       // dispatch lose
       batch(() => {
-        dispatch(setStatus({ status: GameStatus.RoundEnd }));
+        dispatch(setStatus({ status: GameStatus.NotStarted }));
         dispatch(roundLose());
         dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Lose }));
       });
@@ -208,9 +207,7 @@ function statusFilter(status: GameStatus, newStatus: GameStatus): boolean {
       if (newStatus === GameStatus.Playing) return true;
       break;
     case GameStatus.Playing:
-      if (newStatus === GameStatus.RoundEnd) return true;
-      break;
-    case GameStatus.RoundEnd:
+      if (newStatus === GameStatus.NotStarted) return true;
       break;
     default:
       throw new Error(
