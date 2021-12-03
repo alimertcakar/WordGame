@@ -19,7 +19,7 @@ const Microphone = ({}: Props) => {
 
   return (
     <>
-      {isDev && <DevMicrophone />}
+      {isDev && playersTurn && <DevMicrophone />}
       <Box display="flex" justifyContent="center" mt={4}>
         {playersTurn ? (
           <FaMicrophone color="red" size={30} />

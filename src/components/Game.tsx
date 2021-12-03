@@ -3,8 +3,7 @@ import styled from "@emotion/styled";
 import React, { useEffect } from "react";
 import Countdown from "react-countdown";
 import { useDispatch, useSelector } from "react-redux";
-import useGameEngine, { Player } from "src/hooks/useGameEngineOld";
-import { gameSelector, startRound } from "src/slices/game";
+import { gameSelector, GameStatus, Player, startRound } from "src/slices/game";
 import Recognition from "src/util/audio/Recognition";
 import Utterance from "src/util/audio/Utterance";
 import CountdownRenderer from "./CountdownRenderer";
@@ -17,7 +16,7 @@ interface Props {}
 
 const Game = (props: Props) => {
   const game = useSelector(gameSelector);
-  const { round, currentWord, currentPlayer } = game;
+  const { round, currentWord, currentPlayer, status } = game;
   const dispatch = useDispatch();
 
   function start() {
@@ -37,9 +36,9 @@ const Game = (props: Props) => {
       </BoxCurrentWord>
 
       <BoxTurn pt={10}>
-        {/* <Box fontSize="xl" fontWeight="medium">
-          {currentPlayer === Player.Player ? "Your" : "Computers"} turn
-        </Box> */}
+        <Box fontSize="xl" fontWeight="medium">
+          {currentPlayer === Player.Player ? "Your turn" : "Computer plays"}
+        </Box>
         <Microphone />
         <GameCountdown />
       </BoxTurn>
@@ -49,7 +48,9 @@ const Game = (props: Props) => {
       {/* <Rules /> */}
 
       <Flex justifyContent="center" mt={10}>
-        <Button onClick={() => start()}>Start Round</Button>
+        {status === GameStatus.NotStarted && (
+          <Button onClick={() => start()}>Start Round</Button>
+        )}
 
         {/* <Button onClick={() => resetGame()} mr={1}>
           Reset Game
