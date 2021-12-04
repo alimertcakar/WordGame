@@ -25,11 +25,13 @@ export interface GameState {
   nextPlayer: Player;
   nextStartCharacter: string;
   history: GameHistory;
+  lives: number;
 }
 export enum GameStatus {
   NotStarted = "NOT_STARTED",
   Break = "BREAK",
   Playing = "PLAYING",
+  GameOver = "GAME_OVER",
 }
 
 const initialState: GameState = {
@@ -42,6 +44,7 @@ const initialState: GameState = {
   ],
   currentWord: "Mert",
   nextStartCharacter: "t",
+  lives: consts.player.lives,
 };
 
 enum RoundStatus {
@@ -87,6 +90,16 @@ export const gameSlice = createSlice({
     },
     roundLose: (state, action: PayloadAction) => {
       const { currentPlayer, nextPlayer } = state;
+      if (currentPlayer === Player.Player) {
+        if (state.lives < 1) {
+          state.status = GameStatus.GameOver;
+        } else {
+          state.lives--;
+        }
+      } else {
+        state.status = GameStatus.GameOver;
+      }
+
       state.currentPlayer = nextPlayer;
       state.nextPlayer = currentPlayer;
     },
@@ -118,6 +131,9 @@ export const gameSlice = createSlice({
         state.history.push(historyWin());
       }
     },
+    resetGame: (state, action: PayloadAction) => {
+      return initialState;
+    },
   },
 });
 
@@ -127,6 +143,7 @@ export const {
   roundWin,
   roundLose,
   addHistoryEntry,
+  resetGame,
 } = gameSlice.actions;
 
 export const gameSelector = (state: RootState): GameState => state.game;
