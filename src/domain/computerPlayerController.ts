@@ -1,4 +1,4 @@
-import { GameStatus, Player, playRound } from "src/slices/game";
+import { GameStatus, Player, playRound, startRound } from "src/slices/game";
 import names from "../names.json";
 import _ from "lodash";
 import consts from "./gameConstants";
@@ -13,15 +13,21 @@ class ComputerPlayerController {
       action.payload.status === GameStatus.Playing &&
       state.game.currentPlayer === Player.Cpu;
 
+    const shouldCpuStartRound =
+      (action.type === "game/roundWin" || action.type === "game/roundLose") &&
+      state.game.status === GameStatus.NotStarted &&
+      state.game.currentPlayer === Player.Cpu;
+
+    if (shouldCpuStartRound) {
+      store.dispatch(startRound());
+    }
+
     if (shouldCpuPlay) {
-      const cpuRandomWait = _.random(0, consts.timePerRound / 1.1); // %10 margin of error
+      const cpuRandomWait = _.random(0, consts.timePerRound / 2); // %25 margin of error
       const randomName = this.getRandomName(state.game.nextStartCharacter);
       const cpuFailRate =
         state.game.round ** consts.cpu.guessFailRateMultiplier;
       const didCpuFail = cpuFailRate / 100 > Math.random();
-      console.log(didCpuFail, "didCpuFail");
-      console.log(cpuFailRate / 100, "cpuFailRate");
-      console.log(Math.random(), "Math.random();");
 
       if (!didCpuFail) {
         setTimeout(() => {
