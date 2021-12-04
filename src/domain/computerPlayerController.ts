@@ -16,11 +16,19 @@ class ComputerPlayerController {
     if (shouldCpuPlay) {
       const cpuRandomWait = _.random(0, consts.timePerRound / 1.1); // %10 margin of error
       const randomName = this.getRandomName(state.game.nextStartCharacter);
+      const cpuFailRate =
+        state.game.round ** consts.cpu.guessFailRateMultiplier;
+      const didCpuFail = cpuFailRate / 100 > Math.random();
+      console.log(didCpuFail, "didCpuFail");
+      console.log(cpuFailRate / 100, "cpuFailRate");
+      console.log(Math.random(), "Math.random();");
 
-      setTimeout(() => {
-        // PLAY A ROUND AS CPU
-        store.dispatch(playRound(randomName));
-      }, cpuRandomWait);
+      if (!didCpuFail) {
+        setTimeout(() => {
+          // PLAY A ROUND AS CPU
+          store.dispatch(playRound(randomName));
+        }, cpuRandomWait);
+      }
     }
   }
 
