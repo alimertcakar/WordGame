@@ -10,6 +10,7 @@ import CountdownRenderer from "./CountdownRenderer";
 import GameCountdown from "./GameCountdown";
 import Microphone from "./Microphone";
 import Rules from "./Rules";
+import History from "./History";
 import Scoreboard from "./Scoreboard";
 
 interface Props {}
@@ -57,6 +58,7 @@ const Game = (props: Props) => {
         </Button>
         <Button onClick={() => resetGame()}>Pause Game</Button> */}
       </Flex>
+      <History />
     </DivContainer>
   );
 };

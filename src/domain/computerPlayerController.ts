@@ -14,18 +14,14 @@ class ComputerPlayerController {
       state.game.currentPlayer === Player.Cpu;
 
     if (shouldCpuPlay) {
+      const cpuRandomWait = _.random(0, consts.timePerRound / 1.1); // %10 margin of error
       const randomName = this.getRandomName(state.game.nextStartCharacter);
-      store.dispatch(playRound(randomName));
+
+      setTimeout(() => {
+        // PLAY A ROUND AS CPU
+        store.dispatch(playRound(randomName));
+      }, cpuRandomWait);
     }
-
-    const cpuRandomWait = _.random(
-      consts.timePerRound / 2, // half
-      consts.timePerRound - 450 // -450ms for margin of error
-    );
-
-    setTimeout(() => {
-      // PLAY A ROUND AS CPU
-    }, cpuRandomWait);
   }
 
   static getRandomName(letter) {

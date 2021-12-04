@@ -8,13 +8,13 @@ export enum Player {
   Player = "PLAYER",
 }
 
-enum WinnerType {
+export enum WinnerType {
   FirstRound = "FIRST_ROUND_NO_WINNER",
 }
 
 export type Winner = Player | WinnerType;
 
-type GameHistoryItem = { player: Player; winner: Winner; word: string };
+export type GameHistoryItem = { player: Player; winner: Winner; word: string };
 type GameHistory = GameHistoryItem[];
 
 export interface GameState {
@@ -130,6 +130,8 @@ export const {
 } = gameSlice.actions;
 
 export const gameSelector = (state: RootState): GameState => state.game;
+export const historySelector = (state: RootState): GameHistory =>
+  state.game.history;
 
 export default gameSlice.reducer;
 
