@@ -3,7 +3,7 @@ const secondToMs = 1000;
 const consts = {
   secondToMs,
   timePerRound: 6 * secondToMs,
-  timeRoundBreak: 4 * secondToMs,
+  timeRoundBreak: 1 * secondToMs,
   game: {
     maxRoundsUntilTie: 20,
   },

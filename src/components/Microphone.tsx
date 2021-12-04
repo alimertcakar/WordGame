@@ -10,7 +10,6 @@ interface Props {}
 
 const Microphone = ({}: Props) => {
   const state = useSelector(gameSelector);
-  console.log(state, "game");
   const playersTurn = state.currentPlayer === Player.Player;
 
   if (state.status !== GameStatus.Playing) {

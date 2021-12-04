@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { applyMiddleware } from "redux";
 
 //persist
 import {
@@ -12,6 +13,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { computerPlayerMiddleware } from "./domain/computerPlayerController";
 import gameSlice from "./slices/game";
 const persistConfig = {
   key: "root",
@@ -36,7 +38,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(computerPlayerMiddleware),
 });
 export const persistor = persistStore(store);
 
