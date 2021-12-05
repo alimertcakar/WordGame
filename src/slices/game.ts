@@ -62,6 +62,7 @@ type HistoryPayload = {
 };
 type StatusPayload = {
   status: GameStatus;
+  round: number;
 };
 
 export const gameSlice = createSlice({
@@ -73,9 +74,13 @@ export const gameSlice = createSlice({
       state.round++;
     },
     setStatus(state, action: PayloadAction<StatusPayload>) {
-      const { status } = action.payload;
+      const { status, round } = action.payload;
       const shouldUpdateStatus = statusFilter(state.status, status);
-      if (shouldUpdateStatus) {
+      if (round !== state.round) {
+        console.log(
+          `This round(${round}) already ended. Current round is ${state.round}. Skipping setStatus...`
+        );
+      } else if (shouldUpdateStatus) {
         state.status = status;
       }
     },
@@ -168,11 +173,14 @@ export function startRound() {
     batch(() => {
       // Initiate new round
       dispatch(addRound());
-      dispatch(setStatus({ status: GameStatus.Break }));
+      const currentRound = state.game.round + 1; // addRound above increased current round by one.
+      dispatch(setStatus({ status: GameStatus.Break, round: currentRound }));
 
       // Start the round after break
       setTimeout(() => {
-        dispatch(setStatus({ status: GameStatus.Playing }));
+        dispatch(
+          setStatus({ status: GameStatus.Playing, round: currentRound })
+        );
       }, consts.timeRoundBreak);
 
       // End the round forcefully, (user response is timed out)
@@ -185,7 +193,12 @@ export function startRound() {
               roundStatus: RoundStatus.Timeout,
             })
           );
-          dispatch(setStatus({ status: GameStatus.NotStarted }));
+          dispatch(
+            setStatus({
+              status: GameStatus.NotStarted,
+              round: currentRound,
+            })
+          );
           dispatch(roundLose());
         }
       }, consts.timeRoundBreak + consts.timePerRound);
@@ -196,19 +209,20 @@ export function startRound() {
 export function playRound(word: string) {
   return (dispatch, getState) => {
     const game: GameState = getState().game;
-    const { status, currentWord } = game;
+    const { status, currentWord, round } = game;
     const targetLetter = currentWord.at(-1);
     let didWin = false;
 
     if (status !== GameStatus.Playing) {
-      throw new Error("Can't play a round if it's not in playing state");
+      // Timedout
     } else if (!word) {
-      // TODO HANDLE EMPTY ANSWER
-    } else if (false) {
+      //  Empty Answer
+    } else if (!isValidWord(word)) {
       // TODO CHECK JSON, CHECK IF IN HISTORY
     } else if (
       word[0].toLocaleLowerCase() !== targetLetter.toLocaleLowerCase()
     ) {
+      // Word first letter does not match
     } else {
       didWin = true;
     }
@@ -217,14 +231,14 @@ export function playRound(word: string) {
       // dispatch win
       batch(() => {
         dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Win }));
-        dispatch(setStatus({ status: GameStatus.NotStarted }));
+        dispatch(setStatus({ status: GameStatus.NotStarted, round: round }));
         dispatch(roundWin({ word }));
       });
     } else {
       // dispatch lose
       batch(() => {
         dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Lose }));
-        dispatch(setStatus({ status: GameStatus.NotStarted }));
+        dispatch(setStatus({ status: GameStatus.NotStarted, round: round }));
         dispatch(roundLose());
       });
     }
@@ -255,4 +269,8 @@ function statusFilter(status: GameStatus, newStatus: GameStatus): boolean {
         "Tried to update status but new status is not compatible with the previous one."
       );
   }
+}
+
+function isValidWord(word: string): boolean {
+  return true;
 }
