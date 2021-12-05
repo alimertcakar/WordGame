@@ -24,6 +24,11 @@ const Playing = (props: Props) => {
     dispatch(startRound());
   }
 
+  useEffect(() => {
+    const utterance = new Utterance();
+    utterance.speak(currentWord);
+  }, [currentWord]);
+
   return (
     <DivContainer>
       <BoxCurrentWord p={3} color="white">
