@@ -57,9 +57,9 @@ const History = (props: {}) => {
             </Tr>
           </Thead>
           <Tbody>
-            {history.map((item) => (
+            {history.map((item, index) => (
               <HistoryItem
-                key={item.winner + item.player + item.word}
+                key={index} // i know this is not right
                 item={item}
               />
             ))}

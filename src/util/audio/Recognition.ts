@@ -27,10 +27,13 @@ export default class RecognitionControler {
   }
 
   private recognitionEventHandler = (event) => {
+    console.log(event, "recog event");
     this.emitter.emit("recognition", event);
   };
 
   public start() {
-    this.recognition.start();
+    try {
+      this.recognition.start();
+    } catch (e) {}
   }
 }
