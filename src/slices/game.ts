@@ -286,9 +286,11 @@ function statusFilter(status: GameStatus, newStatus: GameStatus): boolean {
       if (newStatus === GameStatus.NotStarted) return true;
       break;
     default:
-      throw new Error(
-        "Tried to update status but new status is not compatible with the previous one."
-      );
+      console.log(status, "status");
+      console.log(newStatus, "newStatus");
+    // throw new Error(
+    //   "Tried to update status but new status is not compatible with the previous one."
+    // );
   }
 }
 

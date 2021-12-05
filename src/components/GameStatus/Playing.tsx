@@ -17,7 +17,7 @@ interface Props {}
 
 const Playing = (props: Props) => {
   const game = useSelector(gameSelector);
-  const { round, currentWord, currentPlayer, status } = game;
+  const { round, currentWord, currentPlayer, status, lives } = game;
   const dispatch = useDispatch();
 
   function start() {
@@ -40,7 +40,6 @@ const Playing = (props: Props) => {
           {currentWord.toLocaleLowerCase()}
         </Box>
       </BoxCurrentWord>
-
       <BoxTurn pt={10}>
         <Box fontSize="xl" fontWeight="medium">
           {currentPlayer === Player.Player ? "Your turn" : "Computer plays"}
@@ -48,11 +47,8 @@ const Playing = (props: Props) => {
         <Microphone />
         <GameCountdown />
       </BoxTurn>
-
       {/* <Scoreboard state={state} /> */}
-
       {/* <Rules /> */}
-
       <Flex justifyContent="center" mt={10}>
         {status === GameStatus.NotStarted && (
           <Button onClick={() => start()}>Start Round</Button>
@@ -64,6 +60,9 @@ const Playing = (props: Props) => {
     <Button onClick={() => resetGame()}>Pause Game</Button> */}
       </Flex>
       <History />
+      <Flex justifyContent="center" mt={10}>
+        Your lives: {lives}
+      </Flex>
     </DivContainer>
   );
 };

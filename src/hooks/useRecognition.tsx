@@ -13,7 +13,11 @@ export default function useRecognition(
 
   useEffect(() => {
     recognition.emitter.on("recognition", (event) => {
-      const { confidence, transcript } = event.results[0][0];
+      let results = { confidence: 0, transcript: "" };
+      try {
+        results = event.results[0][0];
+      } catch {}
+      const { confidence, transcript } = results;
       if (isPlayersTurn) {
         console.log(transcript, "transcript");
         dispatch(playRound(transcript));

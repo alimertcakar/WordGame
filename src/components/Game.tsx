@@ -14,14 +14,15 @@ import History from "./History";
 import Scoreboard from "./Scoreboard";
 import GameOver from "./GameStatus/GameOver";
 import Playing from "./GameStatus/Playing";
+import consts from "src/domain/gameConstants";
 
 interface Props {}
 
 const Game = (props: Props) => {
   const game = useSelector(gameSelector);
-  const { status } = game;
+  const { status, lives } = game;
 
-  if (status === GameStatus.GameOver) {
+  if (status === GameStatus.GameOver || lives < 1) {
     return <GameOver />;
   }
   return <Playing />;
