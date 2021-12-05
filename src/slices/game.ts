@@ -55,10 +55,12 @@ enum RoundStatus {
 
 type RoundPayload = {
   word?: string;
+  round: number;
 };
 type HistoryPayload = {
   word?: string;
   roundStatus: RoundStatus;
+  round: number;
 };
 type StatusPayload = {
   status: GameStatus;
@@ -85,17 +87,23 @@ export const gameSlice = createSlice({
       }
     },
     roundWin: (state, action: PayloadAction<RoundPayload>) => {
-      const { word } = action.payload;
-      state.currentWord = word;
-      state.nextStartCharacter = word.at(-1);
-
-      const { currentPlayer, nextPlayer } = state;
-      state.currentPlayer = nextPlayer;
-      state.nextPlayer = currentPlayer;
+      const { word, round } = action.payload;
+      if (round !== state.round) {
+        // Skipping
+      } else {
+        state.currentWord = word;
+        state.nextStartCharacter = word.at(-1);
+        const { currentPlayer, nextPlayer } = state;
+        state.currentPlayer = nextPlayer;
+        state.nextPlayer = currentPlayer;
+      }
     },
-    roundLose: (state, action: PayloadAction) => {
+    roundLose: (state, action: PayloadAction<RoundPayload>) => {
+      const { round } = action.payload;
       const { currentPlayer, nextPlayer } = state;
-      if (currentPlayer === Player.Player) {
+      if (round !== state.round) {
+        // Skipping
+      } else if (currentPlayer === Player.Player) {
         if (state.lives < 1) {
           state.status = GameStatus.GameOver;
         } else {
@@ -109,7 +117,7 @@ export const gameSlice = createSlice({
       state.nextPlayer = currentPlayer;
     },
     addHistoryEntry: (state, action: PayloadAction<HistoryPayload>) => {
-      const { word, roundStatus } = action.payload;
+      const { word, roundStatus, round } = action.payload;
       const { currentPlayer, nextPlayer } = state;
 
       const historyWin = () => {
@@ -126,8 +134,9 @@ export const gameSlice = createSlice({
           word: "TIMEDOUT",
         };
       };
-
-      if (
+      if (round !== state.round) {
+        // Skipping
+      } else if (
         roundStatus === RoundStatus.Lose ||
         roundStatus === RoundStatus.Timeout
       ) {
@@ -191,6 +200,7 @@ export function startRound() {
           dispatch(
             addHistoryEntry({
               roundStatus: RoundStatus.Timeout,
+              round: currentRound,
             })
           );
           dispatch(
@@ -199,7 +209,7 @@ export function startRound() {
               round: currentRound,
             })
           );
-          dispatch(roundLose());
+          dispatch(roundLose({ round: currentRound }));
         }
       }, consts.timeRoundBreak + consts.timePerRound);
     });
@@ -230,16 +240,20 @@ export function playRound(word: string) {
     if (didWin) {
       // dispatch win
       batch(() => {
-        dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Win }));
+        dispatch(
+          addHistoryEntry({ word, roundStatus: RoundStatus.Win, round })
+        );
         dispatch(setStatus({ status: GameStatus.NotStarted, round: round }));
-        dispatch(roundWin({ word }));
+        dispatch(roundWin({ word, round }));
       });
     } else {
       // dispatch lose
       batch(() => {
-        dispatch(addHistoryEntry({ word, roundStatus: RoundStatus.Lose }));
+        dispatch(
+          addHistoryEntry({ word, roundStatus: RoundStatus.Lose, round })
+        );
         dispatch(setStatus({ status: GameStatus.NotStarted, round: round }));
-        dispatch(roundLose());
+        dispatch(roundLose({ round }));
       });
     }
   };
