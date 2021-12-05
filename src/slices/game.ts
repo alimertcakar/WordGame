@@ -82,7 +82,9 @@ export const gameSlice = createSlice({
         console.log(
           `This round(${round}) already ended. Current round is ${state.round}. Skipping setStatus...`
         );
-      } else if (shouldUpdateStatus) {
+        return state;
+      }
+      if (shouldUpdateStatus) {
         state.status = status;
       }
     },
@@ -90,6 +92,7 @@ export const gameSlice = createSlice({
       const { word, round } = action.payload;
       if (round !== state.round) {
         // Skipping
+        return state;
       } else {
         state.currentWord = word;
         state.nextStartCharacter = word.at(-1);
@@ -103,7 +106,9 @@ export const gameSlice = createSlice({
       const { currentPlayer, nextPlayer } = state;
       if (round !== state.round) {
         // Skipping
-      } else if (currentPlayer === Player.Player) {
+        return state;
+      }
+      if (currentPlayer === Player.Player) {
         if (state.lives < 1) {
           state.status = GameStatus.GameOver;
         } else {
@@ -136,7 +141,9 @@ export const gameSlice = createSlice({
       };
       if (round !== state.round) {
         // Skipping
-      } else if (
+        return state;
+      }
+      if (
         roundStatus === RoundStatus.Lose ||
         roundStatus === RoundStatus.Timeout
       ) {
