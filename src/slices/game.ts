@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import consts from "src/domain/gameConstants";
 import { RootState } from "src/store";
 import { batch } from "react-redux";
+import names from "../names.json";
 
 export enum Player {
   Cpu = "CPU",
@@ -226,7 +227,7 @@ export function startRound() {
 export function playRound(word: string) {
   return (dispatch, getState) => {
     const game: GameState = getState().game;
-    const { status, currentWord, round } = game;
+    const { status, currentWord, round, history } = game;
     const targetLetter = currentWord.at(-1);
     let didWin = false;
 
@@ -234,8 +235,8 @@ export function playRound(word: string) {
       // Timedout
     } else if (!word) {
       //  Empty Answer
-    } else if (!isValidWord(word)) {
-      // TODO CHECK JSON, CHECK IF IN HISTORY
+    } else if (!isValidWord(word, history)) {
+      // Word is not valid
     } else if (
       word[0].toLocaleLowerCase() !== targetLetter.toLocaleLowerCase()
     ) {
@@ -294,6 +295,13 @@ function statusFilter(status: GameStatus, newStatus: GameStatus): boolean {
   }
 }
 
-function isValidWord(word: string): boolean {
-  return true;
+function isValidWord(word: string, history: GameHistory): boolean {
+  const isWordAlreadyPlayed = history.some(
+    (historyItem) => historyItem.word === word
+  );
+
+  const isInJson = names.includes(word);
+  const isValid = !isInJson && !isWordAlreadyPlayed;
+
+  return isValid;
 }

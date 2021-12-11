@@ -7,7 +7,7 @@ import { store } from "src/store";
 class ComputerPlayerController {
   constructor() {}
 
-  static handleAction(action, state) {
+  static handleAction(action, state): void {
     const shouldCpuPlay =
       action.type === "game/setStatus" &&
       action.payload.status === GameStatus.Playing &&
@@ -38,7 +38,7 @@ class ComputerPlayerController {
     }
   }
 
-  static getRandomName(letter) {
+  static getRandomName(letter: string) {
     const namesStaringWithLetter = names.filter((name) =>
       name.startsWith(letter.toLocaleLowerCase())
     );
