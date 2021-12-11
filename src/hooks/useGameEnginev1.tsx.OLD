@@ -1,3 +1,7 @@
+// Moved To redux
+//!  DEPRECATED
+// Left here for reference
+
 import { useEffect, useRef, useState } from "react";
 import Recognition from "src/util/audio/Recognition";
 import { useImmerReducer } from "use-immer";
