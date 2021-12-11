@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { GameState, playRound } from "src/slices/game";
-import Recognition from "src/util/audio/Recognition";
-import Utterance from "src/util/audio/Utterance";
+import Recognition from "src/helpers/audio/Recognition";
+import Utterance from "src/helpers/audio/Utterance";
 
 export default function useRecognition(
   state: GameState,

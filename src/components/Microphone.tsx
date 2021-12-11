@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { isDev } from "src/domain/gameConstants";
 import useRecognition from "src/hooks/useRecognition";
 import { gameSelector, GameStatus, Player } from "src/slices/game";
-import Recognition from "src/util/audio/Recognition";
+import Recognition from "src/helpers/audio/Recognition";
 import DevMicrophone from "./DevMicrophone";
 
 interface Props {}

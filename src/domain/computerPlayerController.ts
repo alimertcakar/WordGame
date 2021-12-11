@@ -38,7 +38,7 @@ class ComputerPlayerController {
     }
   }
 
-  static getRandomName(letter: string) {
+  static getRandomName(letter: string): string {
     const namesStaringWithLetter = names.filter((name) =>
       name.startsWith(letter.toLocaleLowerCase())
     );
